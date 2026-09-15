@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OSIM MAN 2 Bengkalis 2026</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif}
+body{background:#f0fdf4}
+.header{background:#14532d;color:white;padding:16px;display:flex;justify-content:space-between;align-items:center}
+.page{display:none;max-width:480px;margin:20px auto;padding:16px}
+.page.active{display:block}
+.card{background:white;padding:24px;border-radius:20px;box-shadow:0 4px 20px rgba(0,0,0,0.08)}
+input,select{width:100%;padding:14px;margin:8px 0;border:1.5px solid #ddd;border-radius:12px;font-size:15px;background:white}
+.btn-green{width:100%;background:#14532d;color:white;padding:14px;border-radius:12px;font-size:16px;margin-top:10px;border:none;font-weight:bold;cursor:pointer}
+.btn{padding:8px 16px;border:none;border-radius:8px;font-weight:bold;cursor:pointer}
+.badge{padding:4px 10px;border-radius:20px;font-size:12px;font-weight:bold}
+.lulus{background:#dcfce7;color:#166534}
+.tidak{background:#fee2e2;color:#991b1b}
+.menunggu{background:#fef9c3;color:#854d0e}
+.stat{flex:1;background:white;padding:12px;border-radius:12px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.05)}
+.row{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #eee;align-items:center}
+.popup-bg{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:999;justify-content:center;align-items:center}
+.popup-bg.show{display:flex}
+.popup{background:white;padding:30px;border-radius:20px;text-align:center;max-width:340px;width:90%}
+</style>
+</head>
+<body>
+<div class="header"><b>MAN 2 BENGKALIS 2026</b><button class="btn" style="background:white;color:#14532d" onclick="showPage('login')">ADMIN</button></div>
+<div id="page-home" class="page active"><div class="card" style="text-align:center"><h1 style="color:#14532d">Pendaftaran OSIM 2026</h1><button class="btn-green" onclick="showPage('daftar')">DAFTAR SEKARANG →</button><button class="btn" style="width:100%;margin-top:10px;background:#f0fdf4;color:#14532d" onclick="showPage('status')">CEK STATUS KELULUSAN</button></div></div>
+<div id="page-daftar" class="page"><div class="card"><h2>Form Pendaftaran 2026</h2><input id="nama" placeholder="Nama Lengkap"><input id="kelas" placeholder="Kelas (contoh: XI IPA 2)"><select id="mencalon"><option value="" disabled selected>Mencalon Sebagai...</option><option value="Ketua OSIM">Ketua OSIM</option><option value="Wakil Ketua OSIM">Wakil Ketua OSIM</option><option value="Sekretaris">Sekretaris</option><option value="Bendahara">Bendahara</option><option value="Divisi Keagamaan">Divisi Keagamaan</option><option value="Divisi Humas">Divisi Humas</option><option value="Divisi Keamanan">Divisi Keamanan</option><option value="Anggota">Anggota</option></select><input id="wa" placeholder="No WA Aktif"><button class="btn-green" onclick="daftar()">DAFTAR</button><button class="btn" style="width:100%;margin-top:8px" onclick="showPage('home')">← Kembali</button></div></div>
+<div id="page-status" class="page"><div class="card"><h2>Cek Kelulusan 2026</h2><div id="listStatus"></div><button class="btn" style="width:100%;margin-top:15px" onclick="showPage('home')">← Kembali</button></div></div>
+<div id="page-login" class="page"><div class="card"><h2>🔐 Login Admin</h2><input id="adminUser" placeholder="Username"><input id="adminPass" type="password" placeholder="Password"><button class="btn-green" onclick="doLogin()">MASUK</button><p id="loginErr" style="color:red;display:none">Salah!</p></div></div>
+<div id="page-admin" class="page" style="max-width:700px"><div class="card"><div style="display:flex;justify-content:space-between"><h2>Dashboard Admin</h2><button class="btn" onclick="showPage('home')">Keluar</button></div><div style="display:flex;gap:10px;margin:15px 0"><div class="stat"><div id="total">0</div><small>Total</small></div><div class="stat"><div id="jLulus" style="color:green">0</div><small>Lulus</small></div><div class="stat"><div id="jTidak" style="color:red">0</div><small>Tidak</small></div></div><button class="btn" style="background:#22c55e;color:white;width:100%;margin-bottom:8px" onclick="downloadExcel()">📥 Download Excel (TIMESTAMP,NAMA,KELAS,MENCALON)</button><div id="adminList"></div><button class="btn" style="background:#ef4444;color:white;margin-top:10px" onclick="resetSemua()">Hapus Semua</button></div></div>
+<div id="popupSukses" class="popup-bg" onclick="tutupPopup()"><div class="popup"><div style="font-size:50px">✅</div><h2 id="popupNama"></h2><button class="btn-green" onclick="tutupPopup()">CEK STATUS →</button></div></div>
+<div id="popupBlock" class="popup-bg"><div class="popup"><h2>Sudah Terdaftar!</h2><p id="popupBlockNama"></p><button class="btn-green" onclick="document.getElementById('popupBlock').classList.remove('show');showPage('status')">LIHAT STATUS</button></div></div>
+<script>
+let data=JSON.parse(localStorage.getItem('osim_2026')||'[]');
+function showPage(p){if(p=='daftar'&&localStorage.getItem('osim_sudah_daftar_2026')){document.getElementById('popupBlockNama').innerText='HP ini sudah daftar atas nama '+localStorage.getItem('osim_sudah_daftar_2026');document.getElementById('popupBlock').classList.add('show');return;}document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));document.getElementById('page-'+p).classList.add('active');if(p=='status'||p=='admin')render();}
+function doLogin(){if(adminUser.value.toLowerCase()=='admin'&&adminPass.value.toLowerCase()=='man2bengkalis'){showPage('admin')}else{loginErr.style.display='block'}}
+function daftar(){let n=nama.value.trim(),k=kelas.value.trim(),m=mencalon.value,w=wa.value.trim();if(!n||!k||!m)return alert('Lengkapi data!');if(localStorage.getItem('osim_sudah_daftar_2026'))return;let ts=new Date().toLocaleString('id-ID');data.push({timestamp:ts,nama:n,kelas:k,mencalon:m,wa:w,status:'MENUNGGU'});localStorage.setItem('osim_2026',JSON.stringify(data));localStorage.setItem('osim_sudah_daftar_2026',n);nama.value=kelas.value=wa.value='';mencalon.selectedIndex=0;popupNama.innerText='Berhasil '+n+' sebagai '+m;popupSukses.classList.add('show');}
+function tutupPopup(){popupSukses.classList.remove('show');showPage('status');}
+function render(){total.innerText=data.length;jLulus.innerText=data.filter(d=>d.status=='LULUS').length;jTidak.innerText=data.filter(d=>d.status=='TIDAK LULUS').length;let h='';data.forEach((d,i)=>{h+=`<div class="row"><div><b>${d.nama}</b><br><small>${d.kelas} • ${d.mencalon}</small><br><small>${d.timestamp}</small><br><span class="badge menunggu">${d.status}</span></div><div><button class="btn lulus" onclick="setS(${i},'LULUS')">LULUS</button> <button class="btn tidak" onclick="setS(${i},'TIDAK LULUS')">TIDAK</button></div></div>`});adminList.innerHTML=h||'Kosong';let h2='';data.forEach(d=>{h2+=`<div class="row"><span>${d.nama} (${d.kelas}) - ${d.mencalon}</span><span class="badge menunggu">${d.status}</span></div>`});listStatus.innerHTML=h2||'Belum ada';}
+function setS(i,s){data[i].status=s;localStorage.setItem('osim_2026',JSON.stringify(data));render();}
+function resetSemua(){if(confirm('Hapus semua?')){localStorage.clear();data=[];render();showPage('home');}}
+function downloadExcel(){if(!data.length)return alert('Kosong');let csv="TIMESTAMP,NAMA,KELAS,MENCALON,WA,STATUS\n";data.forEach(d=>{csv+=`"${d.timestamp}","${d.nama}","${d.kelas}","${d.mencalon}","${d.wa}","${d.status}"\n`});let blob=new Blob([csv],{type:'text/csv'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='OSIM_2026_TIMESTAMP_NAMA_KELAS_MENCALON.csv';a.click();}
+</script>
+</body>
+  </html>
