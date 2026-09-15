@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OSIM MAN 2 Bengkalis 2026</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif}
+body{background:#f0fdf4}
+.header{background:#14532d;color:white;padding:16px;display:flex;justify-content:space-between;align-items:center}
+.page{display:none;max-width:480px;margin:20px auto;padding:16px}
+.page.active{display:block}
+.card{background:white;padding:24px;border-radius:20px;box-shadow:0 4px 20px rgba(0,0,0,0.08)}
+input,select{width:100%;padding:14px;margin:8px 0;border:1.5px solid #ddd;border-radius:12px;font-size:15px;background:white}
+.btn-green{width:100%;background:#14532d;color:white;padding:14px;border-radius:12px;font-size:16px;margin-top:10px;border:none;font-weight:bold;cursor:pointer}
+.btn{padding:8px 16px;border:none;border-radius:8px;font-weight:bold;cursor:pointer}
+.badge{padding:4px 10px;border-radius:20px;font-size:12px;font-weight:bold}
+.lulus{background:#dcfce7;color:#166534}
+.tidak{background:#fee2e2;color:#991b1b}
+.menunggu{background:#fef9c3;color:#854d0e}
+.stat{flex:1;background:white;padding:12px;border-radius:12px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.05)}
+.row{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #eee;align-items:center}
+.login-box{max-width:360px;margin:60px auto}
+.login-header{text-align:center;margin-bottom:20px}
+.login-header h2{color:#14532d}
+.popup-bg{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:999;justify-content:center;align-items:center}
+.popup-bg.show{display:flex}
+.popup{background:white;padding:30px;border-radius:20px;text-align:center;max-width:340px;width:90%;box-shadow:0 10px 30px rgba(0,0,0,0.2);animation:pop 0.3s ease}
+@keyframes pop{0%{transform:scale(0.8);opacity:0}100%{transform:scale(1);opacity:1}}
+</style>
+</head>
+<body>
+<div class="header">
+<b>MAN 2 BENGKALIS 2026</b>
+<button class="btn" style="background:white;color:#14532d" onclick="showPage('login')">ADMIN</button>
+</div>
+
+<div id="page-home" class="page active">
+<div class="card" style="text-align:center">
+<h1 style="color:#14532d">Pendaftaran OSIM 2026</h1>
+<p style="margin:10px 0;color:gray">MAN 2 Bengkalis - Wawancara Online via Google Meet</p>
+<button class="btn-green" onclick="showPage('daftar')">DAFTAR SEKARANG →</button>
+<button class="btn" style="width:100%;margin-top:10px;background:#f0fdf4;color:#14532d" onclick="showPage('status')">CEK STATUS KELULUSAN</button>
+</div>
+</div>
+
+<div id="page-daftar" class="page">
+<div class="card">
+<h2>Form Pendaftaran 2026</h2>
+<input id="nama" placeholder="Nama Lengkap">
+<input id="kelas" placeholder="Kelas">
+<select id="mencalon">
+<option value="" disabled selected>Mencalon Sebagai...</option>
+<option value="BID.PENDIDIKAN & BELANEGARA">BID.PENDIDIKAN & BELANEGARA</option>
+<option value="BID.KEAGAMAAN & KEDISIPLINAN">BID.KEAGAMAAN & KEDISIPLINAN</option>
+<option value="BID.OLAHRAGA & SENI MINAT BAKAT">BID.OLAHRAGA & SENI MINAT BAKAT</option>
+<option value="BID.PERLENGKAPAN & KEBERSIHAN">BID.PERLENGKAPAN & KEBERSIHAN</option>
+<option value="BID.HUMAS & DOKUMENTASI">BID.HUMAS & DOKUMENTASI</option>
+</select>
+<input id="wa" placeholder="No WA Aktif">
+<button class="btn-green" onclick="daftar()">DAFTAR</button>
+<button class="btn" style="width:100%;margin-top:8px" onclick="showPage('home')">← Kembali</button>
+</div>
+</div>
+
+<div id="page-status" class="page">
+<div class="card">
+<h2>Cek Kelulusan 2026</h2>
+<div id="listStatus" style="margin-top:15px"></div>
+<button class="btn" style="width:100%;margin-top:15px" onclick="showPage('home')">← Kembali</button>
+</div>
+</div>
+
+<div id="page-login" class="page">
+<div class="card login-box">
+<div class="login-header">
+<h2>🔐 Login Admin</h2>
+<p style="font-size:12px;color:gray">OSIM MAN 2 Bengkalis 2026</p>
+</div>
+<input id="adminUser" placeholder="Username">
+<input id="adminPass" type="password" placeholder="Password">
+<button class="btn-green" onclick="doLogin()">MASUK DASHBOARD</button>
+<button class="btn" style="width:100%;margin-top:10px" onclick="showPage('home')">← Kembali ke Beranda</button>
+<p id="loginErr" style="color:red;font-size:12px;text-align:center;margin-top:8px;display:none">Username / Password salah!</p>
+</div>
+</div>
+
+<div id="page-admin" class="page" style="max-width:700px">
+<div class="card">
+<div style="display:flex;justify-content:space-between"><h2>Dashboard Admin 2026</h2><button class="btn" onclick="showPage('home')">Keluar</button></div>
+<div style="display:flex;gap:10px;margin:15px 0">
+<div class="stat"><div id="total">0</div><small>Total</small></div>
+<div class="stat"><div id="jLulus" style="color:green">0</div><small>Lulus</small></div>
+<div class="stat"><div id="jTidak" style="color:red">0</div><small>Tidak</small></div>
+</div>
+<input id="meetLink" placeholder="Tempel Link Google Meet: meet.google.com/xxx">
+<button class="btn" style="background:#2563eb;color:white;width:100%" onclick="saveMeet()">Simpan Link Meet</button>
+<p style="font-size:12px;margin:10px 0">Link aktif: <b id="meetAktif">belum diatur</b></p>
+<div style="display:flex;gap:8px;margin-bottom:12px">
+<button class="btn" style="background:#22c55e;color:white;flex:1" onclick="downloadExcel()">📥 Download Excel</button>
+<button class="btn" style="background:#f59e0b;color:white;flex:1" onclick="resetHP()">🔄 Reset HP Tes</button>
+<button class="btn" style="background:#ef4444;color:white;flex:1" onclick="resetSemua()">🗑️ Hapus Semua</button>
+</div>
+<div id="adminList"></div>
+</div>
+</div>
+
+<div id="popupSukses" class="popup-bg" onclick="tutupPopup()">
+<div class="popup" onclick="event.stopPropagation()">
+<div style="font-size:50px">✅</div>
+<h2 style="color:#14532d;margin:10px 0">Berhasil Daftar!</h2>
+<p id="popupNama" style="color:gray;font-size:14px">Selamat, data kamu sudah masuk</p>
+<div style="margin:12px 0;background:#eff6ff;padding:10px;border-radius:12px">
+<small>Link Wawancara Kamu:</small><br>
+<a id="meetLinkPopup" href="https://meet.google.com/vpm-tenm-qwz" target="_blank" style="color:#2563eb;font-weight:bold">meet.google.com/vpm-tenm-qwz</a><br>
+<button class="btn" style="background:#2563eb;color:white;width:100%;margin-top:8px" onclick="window.open(document.getElementById('meetLinkPopup').href,'_blank')">JOIN GOOGLE MEET →</button>
+</div>
+<button class="btn-green" onclick="tutupPopup()">CEK STATUS KELULUSAN →</button>
+</div>
+</div>
+
+<div id="popupBlock" class="popup-bg" onclick="tutupBlock()">
+<div class="popup" onclick="event.stopPropagation()">
+<div style="font-size:50px">⚠️</div>
+<h2 style="color:#991b1b;margin:10px 0">Sudah Terdaftar!</h2>
+<p id="popupBlockNama" style="color:gray;font-size:14px">HP ini sudah dipakai daftar</p>
+<p style="font-size:12px;color:#991b1b;background:#fee2e2;padding:8px;border-radius:8px;margin:12px 0">1 HP hanya bisa daftar 1x. Hubungi panitia jika ini kesalahan.</p>
+<button class="btn-green" style="background:#991b1b" onclick="tutupBlock()">LIHAT STATUS SAYA →</button>
+</div>
+</div>
+
+<script>
+let defaultMeet = 'https://meet.google.com/vpm-tenm-qwz';
+let data=JSON.parse(localStorage.getItem('osim_2026')||'[]');
+let meet=localStorage.getItem('meet_2026')|| defaultMeet;
+
+function showPage(p){
+ let sudah = localStorage.getItem('osim_sudah_daftar_2026');
+ if(p=='daftar' && sudah){
+   showBlockPopup(sudah);
+   return;
+ }
+ document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));
+ document.getElementById('page-'+p).classList.add('active');
+ if(p=='status'||p=='admin') render();
+}
+function doLogin(){
+ let u = document.getElementById('adminUser').value.trim().toLowerCase();
+ let pw = document.getElementById('adminPass').value.trim().toLowerCase();
+ if(u === 'admin' && pw === 'man2bengkalis'){
+   showPage('admin');
+   document.getElementById('loginErr').style.display='none';
+ } else {
+   document.getElementById('loginErr').style.display='block';
+ }
+}
+function daftar(){
+ let namaVal = document.getElementById('nama').value.trim();
+ let kelasVal = document.getElementById('kelas').value.trim();
+ let mencalonVal = document.getElementById('mencalon').value;
+ let waVal = document.getElementById('wa').value.trim();
+ if(!namaVal) return alert('Isi nama');
+ if(!kelasVal) return alert('Isi kelas');
+ if(!mencalonVal) return alert('Pilih Bidang!');
+ if(localStorage.getItem('osim_sudah_daftar_2026')){
+   showBlockPopup(localStorage.getItem('osim_sudah_daftar_2026'));
+   return;
+ }
+ let timestamp = new Date().toLocaleString('id-ID');
+ data.push({timestamp:timestamp, nama:namaVal, kelas:kelasVal, mencalon:mencalonVal, wa:waVal, status:'MENUNGGU'});
+ localStorage.setItem('osim_2026',JSON.stringify(data));
+ localStorage.setItem('osim_sudah_daftar_2026', namaVal);
+ document.getElementById('nama').value='';
+ document.getElementById('kelas').value='';
+ document.getElementById('mencalon').selectedIndex=0;
+ document.getElementById('wa').value='';
+ document.getElementById('popupNama').innerText = 'Selamat ' + namaVal + ' - ' + mencalonVal;
+ document.getElementById('meetLinkPopup').href = meet;
+ document.getElementById('popupSukses').classList.add('show');
+}
+function showBlockPopup(nama){
+ document.getElementById('popupBlockNama').innerText = 'HP ini sudah dipakai daftar atas nama: ' + nama;
+ document.getElementById('popupBlock').classList.add('show');
+}
+function tutupBlock(){
+ document.getElementById('popupBlock').classList.remove('show');
+ showPage('status');
+}
+function tutupPopup(){
+ document.getElementById('popupSukses').classList.remove('show');
+ showPage('status');
+}
+function render(){
+ document.getElementById('meetAktif').innerText=meet;
+ document.getElementById('total').innerText=data.length;
+ document.getElementById('jLulus').innerText=data.filter(d=>d.status=='LULUS').length;
+ document.getElementById('jTidak').innerText=data.filter(d=>d.status=='TIDAK LULUS').length;
+ let html=''; data.forEach((d,i)=>{
+  let cls=d.status=='LULUS'?'lulus':d.status=='TIDAK LULUS'?'tidak':'menunggu';
+  html+=`<div class="row"><div><b>${d.nama}</b><br><small>${d.kelas} • ${d.mencalon}</small><br><small style="color:gray">${d.timestamp}</small><br><span class="badge ${cls}">${d.status}</span></div><div><button class="btn lulus" onclick="setS(${i},'LULUS')">LULUS</button> <button class="btn tidak" onclick="setS(${i},'TIDAK LULUS')">TIDAK</button></div></div>`;
+ }); document.getElementById('adminList').innerHTML=html||'Belum ada';
+ let html2=''; data.forEach(d=>{ let cls=d.status=='LULUS'?'lulus':d.status=='TIDAK LULUS'?'tidak':'menunggu'; html2+=`<div class="row"><span>${d.nama} (${d.kelas})<br><small>${d.mencalon}</small></span><span class="badge ${cls}">${d.status}</span></div>`; });
+ document.getElementById('listStatus').innerHTML=html2||'Belum ada pendaftar';
+ document.getElementById('listStatus').innerHTML+=`<div style="margin-top:15px;background:#eff6ff;padding:12px;border-radius:12px;text-align:center"><small>Link Wawancara Online</small><br><a href="${meet}" target="_blank" style="color:blue;font-weight:bold">${meet}</a><br><button class="btn" style="background:#2563eb;color:white;margin-top:8px;width:100%" onclick="window.open('${meet}','_blank')">GABUNG MEET SEKARANG</button></div>`;
+}
+function setS(i,s){data[i].status=s; localStorage.setItem('osim_2026',JSON.stringify(data)); render();}
+function saveMeet(){meet=document.getElementById('meetLink').value || defaultMeet; localStorage.setItem('meet_2026',meet); render(); alert('Link disimpan: '+meet);}
+function resetHP(){localStorage.removeItem('osim_sudah_daftar_2026');alert('Reset HP berhasil!');showPage('home');}
+function resetSemua(){if(!confirm('Yakin hapus SEMUA data?')) return; localStorage.removeItem('osim_2026');localStorage.removeItem('osim_sudah_daftar_2026');data=[];render();alert('Data dihapus!');}
+function downloadExcel(){if(data.length==0) return alert('Belum ada data'); let csv="TIMESTAMP,NAMA,KELAS,MENCALON,WA,STATUS\n"; data.forEach(d=>{csv+=`"${d.timestamp}","${d.nama}","${d.kelas}","${d.mencalon}","${d.wa}","${d.status}"\n`}); let blob=new Blob([csv],{type:'text/csv'}); let url=URL.createObjectURL(blob); let a=document.createElement('a'); a.href=url; a.download='OSIM_MAN2_2026.csv'; a.click();}
+document.getElementById('meetLink').value=meet; render();
+</script>
+</body>
+                                                                                                                                           </html>
