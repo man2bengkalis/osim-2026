@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OSIM MAN 2 Bengkalis 2026 - Official Terpusat</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif}
+body{background:#f8fafc}
+.header{background:#14532d;color:white;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+.page{display:none;max-width:520px;margin:20px auto;padding:0 16px 40px}.page.active{display:block}
+.card{background:white;padding:22px;border-radius:18px;box-shadow:0 4px 20px rgba(0,0,0,0.06);border:1px solid #e2e8f0;margin-bottom:16px}
+.badge-official{background:#dcfce7;color:#14532d;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:700}
+input,select{width:100%;padding:14px;margin:8px 0;border:1.5px solid #cbd5e1;border-radius:12px;background:#f8fafc;outline:none}
+input:focus,select:focus{border-color:#14532d}
+.btn-green{width:100%;background:#14532d;color:white;padding:14px;border-radius:12px;border:none;font-weight:700;cursor:pointer}
+.btn{padding:10px 16px;border:none;border-radius:10px;font-weight:600;cursor:pointer}
+.popup-bg{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:999;justify-content:center;align-items:center;padding:16px}.popup-bg.show{display:flex}
+.popup{background:white;padding:24px;border-radius:20px;text-align:center;max-width:380px;width:100%;max-height:90vh;overflow:auto}
+.row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #f1f5f9;gap:10px}
+</style>
+</head>
+<body>
+<div class="header"><div style="display:flex;align-items:center;gap:10px"><div style="width:40px;height:40px;background:white;color:#14532d;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900">M2</div><div><b>MAN 2 BENGKALIS</b> <span class="badge-official">OFFICIAL 2026 • TERPUSAT</span><br><small style="font-size:10px;opacity:.9">Tanpa Download • Data Ngumpul Jadi Satu</small></div></div><button class="btn" style="background:white;color:#14532d" onclick="showPage('login')">ADMIN</button></div>
+
+<div id="page-home" class="page active">
+<div class="card" style="text-align:center;border-left:5px solid #14532d">
+<span style="background:#dcfce7;color:#14532d;padding:6px 12px;border-radius:20px;font-size:11px;font-weight:700">PENDAFTARAN RESMI OSIM 2026</span>
+<h1 style="color:#14532d;margin:14px 0 8px">Pendaftaran OSIM 2026</h1>
+<p style="color:#64748b;font-size:13px;line-height:1.5">5 Bidang Tersedia • Wawancara via Browser<br><b>Tanpa Download Aplikasi</b> - Hemat Paket</p>
+<div style="background:#f0fdf4;border:1px solid #bbf7d0;padding:12px;border-radius:12px;margin:14px 0"><small style="color:#14532d">🔒 <b id="countHome">Memuat...</b> • Data terpusat aman di server</small></div>
+<button class="btn-green" onclick="showPage('daftar')">DAFTAR SEKARANG →</button>
+<button class="btn" style="width:100%;margin-top:10px;background:#f8fafc;border:1px solid #e2e8f0;color:#14532d" onclick="showPage('status')">CEK STATUS KELULUSAN</button>
+</div>
+<div class="card"><h3 style="margin-bottom:10px">5 Bidang OSIM</h3><small style="color:#64748b">1. BID. PENDIDIKAN & BELANEGARA<br>2. BID. KEAGAMAAN & KEDISIPLINAN<br>3. BID. OLAHRAGA & SENI MINAT BAKAT<br>4. BID. PERLENGKAPAN & KEBERSIHAN<br>5. BID. HUMAS & DOKUMENTASI</small></div>
+</div>
+
+<div id="page-daftar" class="page"><div class="card"><h2>Form Pendaftaran</h2><input id="nama" placeholder="Nama Lengkap"><input id="kelas" placeholder="Kelas (Contoh: XI IPA 1)"><select id="mencalon"><option value="" disabled selected>-- Pilih Bidang OSIM --</option><option value="BID.PENDIDIKAN & BELANEGARA">BID.PENDIDIKAN & BELANEGARA</option><option value="BID.KEAGAMAAN & KEDISIPLINAN">BID.KEAGAMAAN & KEDISIPLINAN</option><option value="BID.OLAHRAGA & SENI MINAT BAKAT">BID.OLAHRAGA & SENI MINAT BAKAT</option><option value="BID.PERLENGKAPAN & KEBERSIHAN">BID.PERLENGKAPAN & KEBERSIHAN</option><option value="BID.HUMAS & DOKUMENTASI">BID.HUMAS & DOKUMENTASI</option></select><input id="wa" placeholder="No WA Aktif"><button class="btn-green" id="btnDaftar" onclick="daftar()">KIRIM PENDAFTARAN</button><button class="btn" style="width:100%;margin-top:8px;background:#f8fafc" onclick="showPage('home')">← Kembali</button></div></div>
+
+<div id="page-status" class="page"><div class="card"><h2>Cek Status Kelulusan</h2><div id="listStatus" style="margin-top:10px">Memuat data...</div></div></div>
+<div id="page-login" class="page"><div class="card"><h2>🔐 Login Admin</h2><p style="font-size:12px;color:#64748b;margin:6px 0">Username: admin | Password: man2bengkalis</p><input id="adminUser" placeholder="Username"><input id="adminPass" type="password" placeholder="Password"><button class="btn-green" onclick="doLogin()">MASUK DASHBOARD</button></div></div>
+
+<div id="page-admin" class="page" style="max-width:700px"><div class="card"><h2>Dashboard Admin - Data Terpusat</h2><p style="font-size:11px;color:#22c55e">✅ Terhubung ke: api.npoint.io/734c2bbd894d26e14a20</p><div style="display:flex;gap:10px;margin:12px 0"><div style="flex:1;background:#f8fafc;padding:12px;border-radius:12px;text-align:center"><div id="total" style="font-weight:800;font-size:20px">0</div><small>Total Pendaftar</small></div><div style="flex:1;background:#f0fdf4;padding:12px;border-radius:12px;text-align:center"><div id="jLulus" style="font-weight:800;font-size:20px;color:#14532d">0</div><small>Lulus</small></div></div><input id="meetLink" placeholder="Paste Link Google Meet baru"><button class="btn" style="background:#2563eb;color:white;width:100%" onclick="saveMeet()">Simpan Link Meet</button><p style="font-size:11px;margin:8px 0">Link aktif: <b id="meetAktif" style="word-break:break-all"></b></p><button class="btn" style="background:#22c55e;color:white;width:100%;margin:12px 0" onclick="downloadExcel()">📥 Download Excel (CSV)</button><button class="btn" style="background:#f8fafc;border:1px solid #e2e8f0;width:100%" onclick="loadData()">🔄 Refresh Data</button><div id="adminList" style="margin-top:12px"></div></div></div>
+
+<div id="popupSukses" class="popup-bg"><div class="popup"><div style="font-size:50px">✅</div><h3 id="popupNama" style="margin:8px 0"></h3><p style="font-size:12px;color:#16a34a">Data berhasil masuk terpusat!</p><div style="background:#fef9c3;padding:12px;border-radius:12px;border:1.5px dashed #eab308;text-align:left;margin:12px 0"><b style="font-size:13px">⚠️ GAK PERLU DOWNLOAD!</b><br><small style="line-height:1.4">1. Klik tombol biru JOIN VIA BROWSER di bawah<br>2. Pilih "Lanjutkan di browser"<br>3. Langsung masuk wawancara - Hemat paket!</small></div><div style="background:#f8fafc;padding:10px;border-radius:10px;word-break:break-all"><small>Link: </small><a id="meetLinkPopup" href="" target="_blank" style="font-size:12px"></a></div><button class="btn" id="btnJoin" style="background:#2563eb;color:white;width:100%;margin-top:10px" onclick="joinMeet()">JOIN VIA BROWSER (Tanpa Download) →</button><button class="btn-green" style="margin-top:10px" onclick="tutupPopup()">LIHAT STATUS KELULUSAN →</button></div></div>
+
+<script>
+const NPOINT_URL = "https://api.npoint.io/734c2bbd894d26e14a20";
+let meet = localStorage.getItem('meet_2026') || 'https://meet.google.com/vpm-tenm-qwz';
+let allData = [];
+document.getElementById('meetAktif').innerText = meet;
+
+function showPage(p){document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));document.getElementById('page-'+p).classList.add('active');if(p=='status'||p=='admin'||p=='home')loadData();}
+function doLogin(){if(adminUser.value.toLowerCase()=='admin'&&adminPass.value.toLowerCase()=='man2bengkalis')showPage('admin'); else alert('Salah!');}
+function joinMeet(){window.open(meet,'_blank');}
+
+async function getDataFromServer(){
+ try{
+  let res = await fetch(NPOINT_URL);
+  let data = await res.json();
+  if(!Array.isArray(data)) data = [];
+  return data;
+ }catch(e){ return []; }
+}
+async function saveDataToServer(arr){
+ await fetch(NPOINT_URL, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(arr)});
+}
+
+async function loadData(){
+ document.getElementById('countHome').innerText = 'Memuat...';
+ try{
+  allData = await getDataFromServer();
+  render(allData);
+ }catch(e){
+  document.getElementById('countHome').innerText = 'Gagal load';
+ }
+}
+
+function render(data){
+ document.getElementById('countHome')&&(document.getElementById('countHome').innerText = data.length + ' Pendaftar sudah terdata');
+ document.getElementById('total')&&(document.getElementById('total').innerText=data.length);
+ document.getElementById('jLulus')&&(document.getElementById('jLulus').innerText=data.filter(d=>d.status=='LULUS').length);
+ let h=''; data.forEach(d=>{
+  h+=`<div class="row"><div><b>${d.nama}</b><br><small>${d.kelas} • ${d.mencalon}</small><br><small style="color:#94a3b8">${d.timestamp} • ${d.wa}</small></div><div style="display:flex;gap:6px"><button class="btn" style="background:#dcfce7;font-size:11px" onclick="setStatus('${d.id}','LULUS')">LULUS</button><button class="btn" style="background:#fee2e2;font-size:11px" onclick="setStatus('${d.id}','TIDAK LULUS')">TIDAK</button></div></div>`;
+ });
+ document.getElementById('adminList')&&(document.getElementById('adminList').innerHTML=h||'<p style="text-align:center;color:#94a3b8;margin-top:20px">Belum ada pendaftar</p>');
+ let h2=''; data.forEach(d=>{ h2+=`<div class="row"><span><b>${d.nama}</b><br><small>${d.kelas} • ${d.mencalon}</small></span><span style="background:${d.status=='LULUS'?'#dcfce7':'#fef9c3'};padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700">${d.status}</span></div>` });
+ h2+=`<div style="margin-top:14px;background:#eff6ff;padding:14px;text-align:center;border-radius:14px"><small>Link Wawancara Resmi</small><br><a href="${meet}" target="_blank" style="font-size:12px;word-break:break-all">${meet}</a><br><button class="btn" style="background:#2563eb;color:white;width:100%;margin-top:10px" onclick="window.open('${meet}','_blank')">GABUNG VIA BROWSER (Tanpa Download) →</button><br><small style="font-size:10px;color:#64748b;margin-top:6px;display:block">Tanpa download, hemat paket</small></div>`;
+ document.getElementById('listStatus')&&(document.getElementById('listStatus').innerHTML=h2||'Belum ada data');
+}
+
+async function daftar(){
+ let n=nama.value.trim(),k=kelas.value.trim(),m=mencalon.value,w=wa.value.trim();
+ if(!n||!k||!m||!w)return alert('Lengkapi semua data!');
+ if(localStorage.getItem('osim_sudah_daftar_2026'))return alert('HP ini sudah pernah daftar!');
+ document.getElementById('btnDaftar').innerText='Mengirim...'; document.getElementById('btnDaftar').disabled=true;
+ try{
+  let current = await getDataFromServer();
+  let newItem = {id: Date.now().toString(), nama:n, kelas:k, mencalon:m, wa:w, status:'MENUNGGU', timestamp:new Date().toLocaleString('id-ID')};
+  current.push(newItem);
+  await saveDataToServer(current);
+  localStorage.setItem('osim_sudah_daftar_2026', n);
+  document.getElementById('popupNama').innerText='Selamat '+n+' - '+m;
+  document.getElementById('meetLinkPopup').href=meet; document.getElementById('meetLinkPopup').innerText=meet;
+  document.getElementById('popupSukses').classList.add('show');
+  nama.value=kelas.value=wa.value=''; mencalon.selectedIndex=0;
+  loadData();
+ }catch(e){alert('Gagal simpan: '+e.message);}
+ document.getElementById('btnDaftar').innerText='KIRIM PENDAFTARAN'; document.getElementById('btnDaftar').disabled=false;
+}
+function tutupPopup(){document.getElementById('popupSukses').classList.remove('show');showPage('status');}
+async function setStatus(id,status){
+ let current = await getDataFromServer();
+ let idx = current.findIndex(x=>x.id==id);
+ if(idx>=0){ current[idx].status=status; await saveDataToServer(current); loadData(); }
+}
+function saveMeet(){let v=meetLink.value.trim(); if(!v)return alert('Paste link dulu'); meet=v; localStorage.setItem('meet_2026',meet); document.getElementById('meetAktif').innerText=meet; alert('Link disimpan: '+meet);}
+function downloadExcel(){
+ if(!allData.length)return alert('Belum ada data');
+ let csv="TIMESTAMP,NAMA,KELAS,BIDANG,WA,STATUS\n";
+ allData.forEach(d=>{csv+=`"${d.timestamp}","${d.nama}","${d.kelas}","${d.mencalon}","${d.wa}","${d.status}"\n`;});
+ let blob=new Blob([csv],{type:'text/csv'}); let a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='OSIM_MAN2_2026_TERPUSAT.csv'; a.click();
+}
+loadData();
+</script>
+</body>
+  </html>
